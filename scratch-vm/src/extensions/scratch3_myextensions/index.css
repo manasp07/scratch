@@ -1,0 +1,10 @@
+.generated-story {
+    max-width: 100%; /* Ensure the story doesn't overflow horizontally */
+    overflow-wrap: break-word; /* Wrap long words to fit within the container */
+    padding: 10px; /* Add padding for better readability */
+    border: 1px solid #ccc; /* Add border for visual separation */
+    border-radius: 5px; /* Add rounded corners */
+    background-color: #f9f9f9; /* Set background color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+    margin-bottom: 20px; /* Add some space between stories */
+}
