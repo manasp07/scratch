@@ -11,6 +11,8 @@ import Controls from '../../containers/controls.jsx';
 import {getStageDimensions} from '../../lib/screen-utils';
 import {STAGE_SIZE_MODES} from '../../lib/layout-constants';
 
+import RecordingButtonLite from '../recording-button/RecordingButtonLite.jsx';
+
 import fullScreenIcon from './icon--fullscreen.svg';
 import largeStageIcon from './icon--large-stage.svg';
 import smallStageIcon from './icon--small-stage.svg';
@@ -104,6 +106,7 @@ const StageHeaderComponent = function (props) {
                     <Controls vm={vm} />
                     {stageButton}
                 </Box>
+                <RecordingButtonLite/>
             </Box>
         );
     } else {
