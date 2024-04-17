@@ -30,6 +30,7 @@ import {setConnectionModalExtensionId} from '../reducers/connection-modal';
 import {updateMetrics} from '../reducers/workspace-metrics';
 import {isTimeTravel2020} from '../reducers/time-travel';
 
+
 import {
     activateTab,
     SOUNDS_TAB_INDEX
@@ -52,6 +53,7 @@ class Blocks extends React.Component {
     constructor (props) {
         super(props);
         this.ScratchBlocks = VMScratchBlocks(props.vm, false);
+        this.workspaceRef = React.createRef();
         bindAll(this, [
             'attachVM',
             'detachVM',
@@ -77,7 +79,9 @@ class Blocks extends React.Component {
             'onWorkspaceUpdate',
             'onWorkspaceMetricsChange',
             'setBlocks',
-            'setLocale'
+            'setLocale',
+            
+            
         ]);
         this.ScratchBlocks.prompt = this.handlePromptStart;
         this.ScratchBlocks.statusButtonCallback = this.handleConnectionModalStart;
@@ -105,7 +109,9 @@ class Blocks extends React.Component {
             {rtl: this.props.isRtl, toolbox: this.props.toolboxXML, colours: getColorsForTheme(this.props.theme)}
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
+         
 
+        
         // Register buttons under new callback keys for creating variables,
         // lists, and procedures from extensions.
 
@@ -133,7 +139,7 @@ class Blocks extends React.Component {
         this.workspace.setToolboxRefreshEnabled = () => {
             this.setToolboxRefreshEnabled(false);
         };
-
+        
         // @todo change this when blockly supports UI events
         addFunctionListener(this.workspace, 'translate', this.onWorkspaceMetricsChange);
         addFunctionListener(this.workspace, 'zoom', this.onWorkspaceMetricsChange);
@@ -144,6 +150,7 @@ class Blocks extends React.Component {
         if (this.props.isVisible) {
             this.setLocale();
         }
+        
     }
     shouldComponentUpdate (nextProps, nextState) {
         return (
@@ -544,6 +551,7 @@ class Blocks extends React.Component {
                 this.updateToolbox(); // To show new variables/custom blocks
             });
     }
+    
     render () {
         /* eslint-disable no-unused-vars */
         const {
@@ -577,6 +585,7 @@ class Blocks extends React.Component {
                     onDrop={this.handleDrop}
                     {...props}
                 />
+               
                 {this.state.prompt ? (
                     <Prompt
                         defaultValue={this.state.prompt.defaultValue}

@@ -110,7 +110,9 @@ const StageComponent = props => {
                             </div>
                         )}
                     </div>
-                    
+    
+                   
+
                     <canvas
                         className={styles.draggingSprite}
                         height={0}

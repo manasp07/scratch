@@ -49,6 +49,7 @@ import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
 import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
 import newextensionIconURL from './newextension/newextension.png';
 import newextensionInsetIconURL from './newextension/newextension-icon.png';
+
 export default [
     {
         name: (
@@ -342,14 +343,14 @@ export default [
         helpLink: 'https://scratch.mit.edu/vernier'
     },
     {
-        name:'My new Extension',
+        name:'Chat Bot',
         extensionId:'myextensions',
         collaborator:'Me',
         iconURL:newextensionIconURL,
         insetIconURL:newextensionInsetIconURL,
         description:(
             <FormattedMessage
-              defaultMessage="Using this extension you can type text"
+              defaultMessage="This extension gives info for any text inserted"
               description="my extensions"
               id="gui.extension.myextensions.description"
             />
@@ -360,4 +361,5 @@ export default [
         bluetoothRequired:false,
         helpLink:'https://scratch.mit.edu/wedo'
     }
+    
 ];
