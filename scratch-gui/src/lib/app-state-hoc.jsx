@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {Provider} from 'react-redux';
 import {createStore, combineReducers, compose} from 'redux';
 import ConnectedIntlProvider from './connected-intl-provider.jsx';
-
+import Dexie from 'dexie'
 import localesReducer, {initLocale, localesInitialState} from '../reducers/locales';
 
 import {setPlayer, setFullScreen} from '../reducers/mode.js';
@@ -21,7 +21,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
  *                      required by the GUI. Used to exclude excess state when
                         only rendering modals, not the GUI.
  * @returns {React.Component} component with redux and intl state provided
- */
+*/
 const AppStateHOC = function (WrappedComponent, localesOnly) {
     class AppStateWrapper extends React.Component {
         constructor (props) {
@@ -29,7 +29,6 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
             let initialState = {};
             let reducers = {};
             let enhancer;
-
             let initializedLocales = localesInitialState;
             const locale = detectLocale(Object.keys(locales));
             if (locale !== 'en') {
@@ -83,7 +82,51 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
                 initialState,
                 enhancer
             );
+            this.db = new Dexie('restoreDB');
+            this.db.version(1).stores({
+              restoreData: 'timeStamp',
+            });
+            // Set up the interval to save the state every five minutes
+            this.saveInterval = setInterval(() => {
+                const currentState = this.store.getState();
+                localStorage.setItem('currentState', JSON.stringify(currentState.scratchGui.targets.sprites));
+                console.log("Current State:-",currentState.scratchGui.targets);
+                this.addProjectState(currentState,this.db);
+                console.log("Addede")
+            }, 10 * 1000); // 5 minutes in milliseconds
         }
+
+        addProjectState = (state,db) => {
+            try{
+                const date = Date.now();
+                // const { monitors,vm,toolbox, ...stat } = state.scratchGui;
+                const st = {...state.scratchGui.targets,timeStamp:date}
+                db.restoreData.put(st);
+                console.log("Successfully Added using Dexie!!")
+            }
+            catch(err){
+                console.log("Error!!",err.message)
+            }
+        };
+        getLatestState = async () => {
+            try {
+              const latestState = await this.db.restoreData.orderBy('timeStamp').desc().first();
+              if (latestState) {
+                console.log("Latest State :- ", latestState); // Log the entire object
+              } else {
+                console.log('No saved state found in Dexie.');
+              }
+            } catch (err) {
+              console.error('Error retrieving saved state:', err.message);
+            }
+          };
+          
+        
+        componentWillUnmount () {
+            // Clear the interval when the component unmounts
+            clearInterval(this.saveInterval);
+        }
+
         componentDidUpdate (prevProps) {
             if (localesOnly) return;
             if (prevProps.isPlayerOnly !== this.props.isPlayerOnly) {
@@ -93,6 +136,7 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
                 this.store.dispatch(setFullScreen(this.props.isFullScreen));
             }
         }
+
         render () {
             const {
                 isFullScreen, // eslint-disable-line no-unused-vars
@@ -111,12 +155,14 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
             );
         }
     }
+
     AppStateWrapper.propTypes = {
         isFullScreen: PropTypes.bool,
         isPlayerOnly: PropTypes.bool,
         isTelemetryEnabled: PropTypes.bool,
         showTelemetryModal: PropTypes.bool
     };
+
     return AppStateWrapper;
 };
 

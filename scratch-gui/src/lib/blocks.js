@@ -6,6 +6,7 @@
  */
 export default function (vm, useCatBlocks) {
     const ScratchBlocks = useCatBlocks ? require('cat-blocks') : require('scratch-blocks');
+    console.log(ScratchBlocks)
     const jsonForMenuBlock = function (name, menuOptionsFn, colors, start) {
         return {
             message0: '%1',
